@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Datasets (downloaded locally, gitignored — too large for git)
+data/
+
