@@ -220,3 +220,6 @@ __marimo__/
 # Datasets (downloaded locally, gitignored — too large for git)
 data/
 
+
+# Exception: keep the data/ folder README for documentation
+!data/README.md
