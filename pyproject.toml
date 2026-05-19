@@ -1,0 +1,21 @@
+﻿[project]
+name = "sar-flood-extent"
+version = "0.1.0"
+description = "Sentinel-1 SAR flood-extent segmentation"
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.0",
+    "torchvision",
+    "segmentation-models-pytorch",
+    "transformers",
+    "rasterio",
+    "geopandas",
+    "albumentations",
+    "wandb",
+    "tqdm",
+    "matplotlib",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
