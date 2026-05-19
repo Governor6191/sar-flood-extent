@@ -1,4 +1,4 @@
-﻿[project]
+[project]
 name = "sar-flood-extent"
 version = "0.1.0"
 description = "Sentinel-1 SAR flood-extent segmentation"
@@ -14,8 +14,14 @@ dependencies = [
     "wandb",
     "tqdm",
     "matplotlib",
+    "datasets",
+    "huggingface_hub",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "tifffile",
+    "shapely",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[tool.uv]
+package = false
