@@ -40,6 +40,38 @@ Region distribution is intentionally skewed. Mekong is 29% of train but only 5.7
 
 ---
 
+## Results
+
+Baseline: U-Net with a ResNet34 encoder, trained on the 252 hand-labeled training scenes and evaluated on the 105-scene all-hand test split, which the model never saw during training or checkpoint selection.
+
+**Overall test set, water class: IoU 0.64, F1 0.78.** The test number matches validation (0.6445 vs 0.6444), so the model generalizes rather than memorizing the validation set.
+
+It is precision-leaning: 86% precision, 72% recall. When it calls a pixel water it is usually right, but it misses about a quarter of actual water. Raising recall is the main target for the next iteration.
+
+Performance varies a lot by region, which is expected since the test split spans 11 regions with different flood and terrain types:
+
+| Region | IoU | F1 |
+|---|---|---|
+| Nigeria | 0.90 | 0.95 |
+| Sri Lanka | 0.86 | 0.92 |
+| Mekong | 0.86 | 0.92 |
+| Spain | 0.73 | 0.85 |
+| Paraguay | 0.66 | 0.79 |
+| India | 0.66 | 0.79 |
+| Bolivia | 0.54 | 0.70 |
+| USA | 0.54 | 0.70 |
+| Ghana | 0.53 | 0.69 |
+| Somalia | 0.41 | 0.58 |
+| Pakistan | 0.17 | 0.29 |
+
+Pakistan is the clear weak spot. The aggregate 0.64 hides a range from 0.17 to 0.90, which is why per-region reporting matters more than a single headline number.
+
+![Test-set predictions](docs/figures/test_predictions.png)
+
+*VV input, ground truth (blue), and prediction (red) on six test scenes. The model captures clear river and floodplain water well and leaves dry scenes blank, but over-predicts on some Pakistan terrain (the low-IoU region in the table).*
+
+---
+
 ## Stack
 
 - Python 3.11+ with [uv](https://github.com/astral-sh/uv)
