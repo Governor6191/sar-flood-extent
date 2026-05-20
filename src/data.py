@@ -93,14 +93,18 @@ class Sen1FloodsDataset(Dataset):
             # Albumentations wants HWC for the image; mask stays HW
             image_hwc = image.transpose(1, 2, 0)
             out = self.transform(image=image_hwc, mask=mask)
-            image = out["image"]
+            image = out["image"].transpose(2, 0, 1)
             mask = out["mask"]
-            if isinstance(image, np.ndarray):
-                image = image.transpose(2, 0, 1)
+
+        # Force dtype and contiguity. Albumentations can hand back an int32
+        # mask or a non-contiguous view. CrossEntropyLoss needs an int64 (Long)
+        # target, and torch.from_numpy needs contiguous memory.
+        image = np.ascontiguousarray(image, dtype=np.float32)
+        mask = np.ascontiguousarray(mask, dtype=np.int64)
 
         return {
-            "image": torch.from_numpy(image) if isinstance(image, np.ndarray) else image,
-            "mask": torch.from_numpy(mask) if isinstance(mask, np.ndarray) else mask,
+            "image": torch.from_numpy(image),
+            "mask": torch.from_numpy(mask),
             "patch_id": sample["patch_id"],
             "region": sample["region"],
             "label_source": sample["label_source"],

@@ -89,8 +89,8 @@ sar-flood-extent/
 - [x] Sen1Floods11 acquisition and schema documentation
 - [x] PyTorch `Dataset` class with hand/weak label-source filtering
 - [x] Dataset exploration and sanity-check visualizations
-- [ ] Per-channel SAR normalization statistics (train split)
-- [ ] U-Net + ResNet baseline training (hand-only)
+- [x] Per-channel SAR normalization statistics (train split)
+- [x] U-Net + ResNet34 baseline training (hand-only): val IoU 0.64, val F1 0.78
 - [ ] Curriculum experiment (weak-pretrain, then hand-finetune)
 - [ ] Test-set evaluation with per-region breakdown
 - [ ] FEMA polygon validation: Hurricane Ida 2021 (Harrison County, MS)
