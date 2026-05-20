@@ -10,9 +10,13 @@ from __future__ import annotations
 from typing import Callable, Optional
 
 import numpy as np
+
+# Import the HuggingFace datasets library (and its pyarrow backend) before
+# torch. On Windows with the CUDA build of torch, loading torch first and
+# pyarrow second segfaults the process. This ordering is load-bearing.
+from datasets import load_dataset
 import torch
 from torch.utils.data import Dataset
-from datasets import load_dataset
 
 
 class Sen1FloodsDataset(Dataset):
