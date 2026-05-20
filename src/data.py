@@ -18,13 +18,17 @@ from datasets import load_dataset
 class Sen1FloodsDataset(Dataset):
     """Sentinel-1 SAR flood-extent segmentation dataset.
 
+    The Sen1Floods11 preprocessed-dl variant ships the SAR channels already
+    z-score standardized per channel (global mean 0, std 1), so no extra
+    normalization is needed before the model.
+
     Returns dicts with keys:
-        image:        FloatTensor (2, 512, 512) — VV, VH polarizations (dB-scale)
-        mask:         LongTensor  (512, 512)    — values in {-1, 0, 1}
-                      (-1 = unlabeled/masked, 0 = dry, 1 = water)
+        image:        FloatTensor (2, 512, 512), VV and VH polarizations
+        mask:         LongTensor  (512, 512), values in {-1, 0, 1}
+                      (-1 = unlabeled or nodata, 0 = dry, 1 = water)
         patch_id:     str
         region:       str
-        label_source: str — "hand" or "weak"
+        label_source: str, "hand" or "weak"
     """
 
     SPLITS = ("train", "validation", "test")
@@ -69,6 +73,17 @@ class Sen1FloodsDataset(Dataset):
         # HF returns Python lists; convert to float32 / int64 numpy arrays
         image = np.asarray(sample["s1"], dtype=np.float32)   # (2, H, W)
         mask = np.asarray(sample["label"], dtype=np.int64)   # (H, W)
+
+        # Handle nodata. About 2% of SAR pixels are non-finite (image borders
+        # and swath edges). A pixel with no input signal can't be learned from,
+        # and ~14% of them carry real 0/1 labels, so relying on the existing -1
+        # mask alone would feed garbage into the loss. Mark every non-finite
+        # pixel as ignore (-1), then fill the input with 0 (the standardized
+        # per-channel mean) so it produces no NaN gradients.
+        invalid = ~np.isfinite(image).all(axis=0)   # (H, W)
+        if invalid.any():
+            mask[invalid] = -1
+            image = np.nan_to_num(image, nan=0.0, posinf=0.0, neginf=0.0)
 
         if self.transform is not None:
             # Albumentations wants HWC for the image; mask stays HW
