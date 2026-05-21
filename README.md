@@ -126,9 +126,9 @@ sar-flood-extent/
 - [x] Test-set evaluation with per-region breakdown
 - [x] Weak+hand training: test IoU 0.67, F1 0.80 (beats the hand-only baseline)
 - [x] Inference script (standardized SAR input to flood mask)
-- [ ] Pretrained model release on Hugging Face Hub
-- [ ] FEMA polygon validation: Hurricane Ida 2021 (needs raw-scene preprocessing)
-- [ ] End-to-end raw-Sentinel-1 inference (recover dataset standardization constants)
+- [x] Pretrained model released on Hugging Face Hub ([Governor6191/sar-flood-extent-unet-resnet34](https://huggingface.co/Governor6191/sar-flood-extent-unet-resnet34))
+- [x] Recovered dataset standardization constants for raw-scene inference (VV/VH dB mean/std)
+- [ ] FEMA flood-extent validation: Hurricane Harvey 2017 (Houston) via Earth Engine + raw-scene inference
 
 ---
 
