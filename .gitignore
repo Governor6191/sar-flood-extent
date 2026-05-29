@@ -229,6 +229,9 @@ outputs/figures/*.png
 outputs/*.json
 outputs/predictions/
 
+# Exception: keep the Harvey validation metrics (small, reproducibility record)
+!outputs/harvey_validation_metrics.json
+
 # Model checkpoints (released via Hugging Face Hub, not tracked in git)
 checkpoints/
 

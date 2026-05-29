@@ -1,0 +1,31 @@
+{
+  "scene": "harvey_s1_houston_2017-08-30",
+  "ground_truth": "Copernicus EMS EMSR229 Houston delineation",
+  "ground_truth_layer": "EMSR229_01HOUSTON_01DELINEATION_MONIT01_v1_440000_crisis_information_poly.shp",
+  "ground_truth_src_dates": [
+    "2017-08-28",
+    "2017-08-30"
+  ],
+  "perm_occurrence_thresh": 50.0,
+  "domain_px": 40288379,
+  "raw": {
+    "tp": 156762,
+    "fp": 914364,
+    "fn": 466994,
+    "tn": 38750259,
+    "iou": 0.101917925779523,
+    "precision": 0.14635252995445902,
+    "recall": 0.25131942618587993,
+    "f1": 0.18498278889716277
+  },
+  "flood_only": {
+    "tp": 124434,
+    "fp": 456031,
+    "fn": 420073,
+    "tn": 39287841,
+    "iou": 0.12436709050530802,
+    "precision": 0.21436951409645677,
+    "recall": 0.2285259877283483,
+    "f1": 0.22122150545799202
+  }
+}

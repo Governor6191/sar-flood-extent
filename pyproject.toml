@@ -21,6 +21,7 @@ dependencies = [
     "scikit-learn",
     "tifffile",
     "shapely",
+    "earthengine-api>=1.7.26",
 ]
 
 [tool.uv]
