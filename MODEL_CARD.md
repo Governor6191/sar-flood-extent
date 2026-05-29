@@ -53,6 +53,23 @@ Per-region test IoU (the test split spans 11 regions with different terrain):
 | Somalia | 0.39 | 0.56 |
 | Pakistan | 0.20 | 0.33 |
 
+## Real-disaster validation (Hurricane Harvey 2017)
+
+The numbers above are on Sen1Floods11 data. To see how the model does on a hurricane it never trained on, I ran it on a Sentinel-1 GRD scene over Houston (the August 30, 2017 descending pass) and scored it against the Copernicus EMS EMSR229 Houston flood delineation, an independent radar-derived flood map (COSMO-SkyMed, August 28 and 30, 2017). JRC Global Surface Water permanent water (`occurrence >= 50`) is removed from both sides so it's flood against flood.
+
+| Metric | Flood-only | Raw (all water) |
+|---|---|---|
+| IoU | 0.12 | 0.10 |
+| F1 | 0.22 | 0.18 |
+| Precision | 0.21 | 0.15 |
+| Recall | 0.23 | 0.25 |
+
+![Harvey validation against Copernicus EMS](harvey_validation.png)
+
+*Sentinel-1 VV input, model prediction (red), Copernicus EMS observed flood (blue), and the agreement map with permanent water removed (green true positive, red false positive, blue false negative).*
+
+This is well below the 0.67 benchmark IoU, and the reason is mostly a definition mismatch, not a registration error (alignment was checked with flip and shift tests). The model detects open water by its low radar backscatter, but a large share of the Copernicus flood is flooded vegetation and flooded urban land that stays bright in SAR (median VV near -14 dB under the Copernicus polygons versus -16 dB for the model's water, against -9 dB for dry ground). The model can't see flood that doesn't darken the return, and that's most of the recall gap. Houston is also dense urban, the model's weakest setting on the benchmark (USA 0.56 IoU), and this is a cross-sensor, cross-resolution comparison: 10 m Sentinel-1 C-band against a 1:440,000 COSMO-SkyMed X-band map. The takeaway is that open-water flood mapping carries over to a real unseen scene, while urban flood from C-band SAR alone does not.
+
 ## Intended use and limitations
 
 Intended for research and as a flood-mapping baseline on Sentinel-1 SAR. Not validated for operational emergency response.
@@ -62,7 +79,8 @@ Limitations to know before using it:
 - It expects input already standardized like Sen1Floods11. Running it on a raw Sentinel-1 GRD scene requires applying the same preprocessing first; without that, predictions are unreliable.
 - Performance varies sharply by region. It is strong on clear open-water flooding and weak on some terrain (Pakistan scores 0.20). The aggregate hides that range.
 - It is SAR-only (no optical, no DEM, no land-cover priors).
-- Trained and tested on Sen1Floods11; transfer to other sensors, resolutions, or regions is unverified.
+- It is an open-water detector, not an all-flood detector. On the Hurricane Harvey validation it underdetected urban and vegetated flood, which keep high SAR backscatter (flood-only IoU 0.12 against Copernicus EMS). See the validation section above.
+- Trained and tested on Sen1Floods11; transfer to other sensors, resolutions, or regions is otherwise unverified.
 
 ## How to use
 
