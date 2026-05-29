@@ -97,6 +97,24 @@ The flood-only column is the fair one. Raw keeps permanent water in and is shown
 
 This is well below the 0.67 benchmark IoU, and the gap is honest. Most of it is a definition mismatch: the model detects open water by its low radar backscatter, but much of the Copernicus flood is flooded vegetation and flooded urban land that stays bright in SAR (median VV near -14 dB for the Copernicus polygons versus -16 dB for the model's water, against -9 dB for dry ground). The model can't see flood that doesn't darken the return, and that's most of the recall gap. Houston is also the hard case: USA was the model's weakest non-outlier region on the benchmark at 0.56 IoU, and in dense urban terrain dry smooth surfaces read as water while flooded streets between buildings stay bright. On top of that it's a cross-sensor, cross-resolution comparison, 10 m Sentinel-1 C-band against a 1:440,000 COSMO-SkyMed X-band map. Dropping the permanent-water threshold doesn't help (it strips genuine near-channel flood too), so 0.12 is the real number for this model on this scene, not a masking artifact. Open-water flooding is the part SAR does well. Urban flood from C-band alone is not.
 
+To make that concrete, recall splits sharply by the land cover under the flood (ESA WorldCover), within the same flood-only comparison:
+
+| Flooded land cover | Share of flood | Model recall |
+|---|---|---|
+| Herbaceous wetland | 1% | 0.48 |
+| Open water | 18% | 0.43 |
+| Bare / sparse | 13% | 0.25 |
+| Grassland | 41% | 0.20 |
+| Cropland | 7% | 0.16 |
+| Tree cover | 14% | 0.15 |
+| Built-up | 7% | 0.08 |
+
+Recall tracks how dark the flooded surface looks to radar: highest on open water and bare ground, lowest on built-up land, where double-bounce off walls keeps backscatter high. About a fifth of the mapped flood sits on built-up or vegetated terrain that stays bright in SAR, which caps recall for any single-image model regardless of training. That ceiling is the honest boundary of what this model does. Regenerate the breakdown with `scripts/stratify_harvey.py`.
+
+![Harvey recall by land cover](docs/figures/harvey_landcover_stratification.png)
+
+*Model recall by land cover for the Harvey flood (Copernicus EMS reference, permanent water removed). Blue: open and bare terrain where floodwater darkens the radar return. Orange: vegetated and built-up terrain where it stays bright.*
+
 ---
 
 ## Stack
